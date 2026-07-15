@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 
 type PhaseType = "prepare" | "hold" | "rest";
 type Phase = { type: PhaseType; seconds: number; round: number };
@@ -23,6 +24,19 @@ type WakeLockLike = { release: () => Promise<void> };
 
 const PREPARE_SECONDS = 15;
 const HISTORY_KEY = "co2-history";
+
+const APP_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "BREATHLINE CO₂ 테이블",
+  url: "https://co2table.haorio.com/",
+  applicationCategory: "HealthApplication",
+  operatingSystem: "Web",
+  inLanguage: "ko-KR",
+  description: "초보 프리다이버를 위한 물 밖 전용 CO₂ 테이블 숨참기 훈련 타이머",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" },
+  featureList: ["CO₂ 테이블 타이머", "초보자용 훈련 설정", "기기 내 훈련 기록", "드라이 훈련 안전 안내"],
+};
 
 const PRESETS: Record<
   PresetKey,
@@ -447,6 +461,10 @@ export default function Home() {
 
   return (
     <main className={`app-shell phase-${phase.type} ${running ? "is-running" : ""}`}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(APP_SCHEMA) }}
+      />
       <header className="topbar">
         <a className="brand" href="#training" aria-label="Breathline CO2 테이블 홈">
           <span className="brand-mark">B</span>
@@ -455,6 +473,11 @@ export default function Home() {
             <small>CO₂ TABLE</small>
           </span>
         </a>
+        <nav className="site-links" aria-label="훈련 가이드">
+          <Link href="/co2-table">CO₂ 테이블 안내</Link>
+          <Link href="/co2-table-beginner">초보자 안내</Link>
+          <Link href="/freediving-safety">안전 수칙</Link>
+        </nav>
         <div className="top-actions">
           <span className="dry-badge"><i /> DRY ONLY · 물 밖 전용</span>
           <button
@@ -771,7 +794,10 @@ export default function Home() {
       <footer>
         <div className="footer-brand"><span className="brand-mark">B</span><strong>BREATHLINE</strong></div>
         <p>호흡 욕구를 차분히 알아차리는 시간.</p>
-        <small>이 앱은 공인 프리다이빙 교육이나 의료 조언을 대신하지 않습니다.</small>
+        <div className="footer-links">
+          <Link href="/privacy">개인정보 처리방침</Link>
+          <small>이 앱은 공인 프리다이빙 교육이나 의료 조언을 대신하지 않습니다.</small>
+        </div>
       </footer>
     </main>
   );

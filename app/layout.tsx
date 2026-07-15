@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   description:
     "초보 프리다이버를 위한 물 밖 전용 CO₂ 테이블 타이머. 숨 참기는 일정하게, 회복 시간은 단계적으로 줄이며 차분한 호흡 리듬을 훈련하세요.",
   keywords: ["프리다이빙", "CO2 테이블", "숨참기 훈련", "드라이 트레이닝"],
+  alternates: { canonical: "/" },
+  robots: { index: true, follow: true },
   icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
   openGraph: {
     title: "BREATHLINE | 프리다이버 CO₂ 테이블",

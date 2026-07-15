@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 async function render() {
@@ -37,4 +38,20 @@ test("keeps the dry-training safety gate in the rendered UI", async () => {
   assert.match(html, /물 안·물가, 운전·이동 중 사용 금지/);
   assert.match(html, /공인 프리다이빙 교육이나 의료 조언을 대신하지 않습니다/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
+});
+
+test("ships crawlable SEO discovery files and application structured data", async () => {
+  const [robots, sitemap, response] = await Promise.all([
+    readFile(new URL("../public/robots.txt", import.meta.url), "utf8"),
+    readFile(new URL("../public/sitemap.xml", import.meta.url), "utf8"),
+    render(),
+  ]);
+  const html = await response.text();
+
+  assert.match(robots, /Allow: \/$/m);
+  assert.match(robots, /Sitemap: https:\/\/co2table\.haorio\.com\/sitemap\.xml/);
+  assert.match(sitemap, /https:\/\/co2table\.haorio\.com\/co2-table/);
+  assert.match(sitemap, /https:\/\/co2table\.haorio\.com\/freediving-safety/);
+  assert.match(html, /WebApplication/);
+  assert.match(html, /CO₂ 테이블 타이머/);
 });
